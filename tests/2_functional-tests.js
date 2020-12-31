@@ -6,6 +6,15 @@ const server = require("../server");
 const chaiHttp = require("chai-http");
 chai.use(chaiHttp);
 
+
+/*
+
+Notice the done parameter in the test's callback function.
+Calling it at the end without an argument is necessary to signal 
+successful asynchronous completion.
+
+*/
+
 suite("Functional Tests", function () {
   suite("Integration tests with chai-http", function () {
     // #1
@@ -14,8 +23,8 @@ suite("Functional Tests", function () {
         .request(server)
         .get("/hello")
         .end(function (err, res) {
-          assert.fail(res.status, 200);
-          assert.fail(res.text, "hello Guest");
+          assert.equal(res.status, 200);
+          assert.equal(res.text, "hello Guest");
           done();
         });
     });
@@ -25,8 +34,8 @@ suite("Functional Tests", function () {
         .request(server)
         .get("/hello?name=xy_z")
         .end(function (err, res) {
-          assert.fail(res.status, 200);
-          assert.fail(res.text, "hello xy_z");
+          assert.equal(res.status, 200);
+          assert.equal(res.text, "hello xy_z");
           done();
         });
     });
@@ -35,23 +44,33 @@ suite("Functional Tests", function () {
       chai
         .request(server)
         .put("/travellers")
-
+        .send({surname:'Colombo'})
         .end(function (err, res) {
-          assert.fail();
-
+          assert.equal(res.status, 200);
+          assert.equal(res.type, 'application/json');
+          assert.equal(res.body.surname,'Colombo');
           done();
         });
     });
     // #4
     test('send {surname: "da Verrazzano"}', function (done) {
-      assert.fail();
-
+      chai
+        .request(server)
+        .put("/travellers")
+        .send({surname:'daVerrazzno'})
+        .end(function (err, res){
+          assert.equal(res.status,200);
+          assert.equal(res.type, 'application/json');
+          assert.equal(res.body.name,'Giovanni');
+          assert.equal(res.body.surname,"da Verrazzano");
+        });
       done();
     });
   });
 });
 
 const Browser = require("zombie");
+const { put } = require("../server");
 
 suite("e2e Testing with Zombie.js", function () {
 

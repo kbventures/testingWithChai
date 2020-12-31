@@ -1,6 +1,9 @@
 const chai = require('chai');
 const assert = chai.assert;
 
+// https://boilerplate-mochachai-1.kbventures.repl.co
+// https://repl.it/@kbventures/boilerplate-mochachai-1#tests/1_unit-tests.js
+
 suite('Unit Tests', function () {
   suite('Basic Assertions', function () {
     // #1
